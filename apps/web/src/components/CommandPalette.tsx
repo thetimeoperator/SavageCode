@@ -72,6 +72,7 @@ import {
   MonitorIcon,
   PinIcon,
   PinOffIcon,
+  SquareKanbanIcon,
   SquarePenIcon,
   TextSearchIcon,
   UserPlusIcon,
@@ -1288,7 +1289,7 @@ function OpenCommandPaletteDialog(props: {
       value: "action:triage",
       searchTerms: ["triage", "bug", "issue", "report", "broken", "debug", "help", "support"],
       title: "Triage an issue",
-      description: "An agent investigates a T3 Code problem and helps file an issue",
+      description: "An agent investigates a Savage Code problem and helps file an issue",
       icon: <BugIcon className={ITEM_ICON_CLASS} />,
       run: () => startTriage(triageEnvironmentId),
     });
@@ -1571,6 +1572,17 @@ function OpenCommandPaletteDialog(props: {
       },
     });
   }
+
+  actionItems.push({
+    kind: "action",
+    value: "action:board",
+    searchTerms: ["board", "kanban", "tasks", "todo", "needs", "review", "done", "overview"],
+    title: "Open board",
+    icon: <SquareKanbanIcon className={ITEM_ICON_CLASS} />,
+    run: async () => {
+      await navigate({ to: "/" });
+    },
+  });
 
   actionItems.push({
     kind: "action",

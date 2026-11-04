@@ -1,4 +1,5 @@
-import { FolderPlusIcon, SearchIcon, SquarePenIcon, XIcon } from "lucide-react";
+import { Link, useLocation } from "@tanstack/react-router";
+import { FolderPlusIcon, SearchIcon, SquareKanbanIcon, SquarePenIcon, XIcon } from "lucide-react";
 import {
   type ComponentProps,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -9,7 +10,7 @@ import {
 
 import { cn } from "~/lib/utils";
 import { Button } from "../ui/button";
-import { SidebarInput, SidebarMenuButton } from "../ui/sidebar";
+import { SidebarInput, SidebarMenuButton, useSidebar } from "../ui/sidebar";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 
 export interface SidebarThreadHeaderProps {
@@ -57,76 +58,102 @@ export function SidebarThreadHeader({
     : "New thread";
 
   return (
-    <div className="flex items-center gap-1">
-      <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-within:bg-sidebar-row-hover focus-within:text-sidebar-foreground focus-within:ring-1 focus-within:ring-inset focus-within:ring-ring/70">
-        <SearchIcon className="size-4 shrink-0 text-(--sidebar-icon-color)" />
-        <SidebarInput
-          ref={searchInputRef}
-          nativeInput
-          type="search"
-          value={searchQuery}
-          onChange={(event) => onSearchQueryChange(event.currentTarget.value)}
-          onKeyDown={onSearchKeyDown}
-          placeholder="Search"
-          aria-label="Search threads"
-          role="combobox"
-          aria-autocomplete="list"
-          aria-expanded={resultsVisible}
-          aria-controls={resultsVisible ? "sidebar-thread-search-results" : undefined}
-          aria-activedescendant={
-            activeResultExists
-              ? `sidebar-thread-search-result-${activeSearchResultIndex}`
-              : undefined
-          }
-          className="min-w-0 flex-1"
-        />
-        {isSearching ? (
-          <Button
-            type="button"
-            size="icon-micro"
-            variant="ghost-muted"
-            className="shrink-0"
-            aria-label="Clear thread search"
-            onClick={() => {
-              onClearSearch();
-              searchInputRef.current?.focus();
-            }}
-          >
-            <XIcon className="size-3" />
-          </Button>
-        ) : null}
-      </div>
-      <div className="flex shrink-0 items-center">
-        {hasProjects ? (
-          <>
-            {projectScope}
-            <SidebarHeaderIconButton label="Add project" onClick={onNewProject}>
-              <FolderPlusIcon />
-            </SidebarHeaderIconButton>
-          </>
-        ) : null}
-        <SidebarHeaderIconButton
-          label="New thread"
-          tooltip={
-            showNewThreadInProjectHint ? (
-              <span className="flex flex-col gap-0.5">
-                <span>{newThreadLabel}</span>
-                <span className="text-muted-foreground">
-                  New thread in current project: Shift+click
-                  {newThreadInProjectShortcutLabel ? ` (${newThreadInProjectShortcutLabel})` : ""}
+    <div className="flex flex-col gap-1">
+      <SidebarBoardButton />
+      <div className="flex items-center gap-1">
+        <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-within:bg-sidebar-row-hover focus-within:text-sidebar-foreground focus-within:ring-1 focus-within:ring-inset focus-within:ring-ring/70">
+          <SearchIcon className="size-4 shrink-0 text-(--sidebar-icon-color)" />
+          <SidebarInput
+            ref={searchInputRef}
+            nativeInput
+            type="search"
+            value={searchQuery}
+            onChange={(event) => onSearchQueryChange(event.currentTarget.value)}
+            onKeyDown={onSearchKeyDown}
+            placeholder="Search"
+            aria-label="Search threads"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={resultsVisible}
+            aria-controls={resultsVisible ? "sidebar-thread-search-results" : undefined}
+            aria-activedescendant={
+              activeResultExists
+                ? `sidebar-thread-search-result-${activeSearchResultIndex}`
+                : undefined
+            }
+            className="min-w-0 flex-1"
+          />
+          {isSearching ? (
+            <Button
+              type="button"
+              size="icon-micro"
+              variant="ghost-muted"
+              className="shrink-0"
+              aria-label="Clear thread search"
+              onClick={() => {
+                onClearSearch();
+                searchInputRef.current?.focus();
+              }}
+            >
+              <XIcon className="size-3" />
+            </Button>
+          ) : null}
+        </div>
+        <div className="flex shrink-0 items-center">
+          {hasProjects ? (
+            <>
+              {projectScope}
+              <SidebarHeaderIconButton label="Add project" onClick={onNewProject}>
+                <FolderPlusIcon />
+              </SidebarHeaderIconButton>
+            </>
+          ) : null}
+          <SidebarHeaderIconButton
+            label="New thread"
+            tooltip={
+              showNewThreadInProjectHint ? (
+                <span className="flex flex-col gap-0.5">
+                  <span>{newThreadLabel}</span>
+                  <span className="text-muted-foreground">
+                    New thread in current project: Shift+click
+                    {newThreadInProjectShortcutLabel ? ` (${newThreadInProjectShortcutLabel})` : ""}
+                  </span>
                 </span>
-              </span>
-            ) : (
-              newThreadLabel
-            )
-          }
-          disabled={newThreadDisabled}
-          onClick={onNewThread}
-        >
-          <SquarePenIcon />
-        </SidebarHeaderIconButton>
+              ) : (
+                newThreadLabel
+              )
+            }
+            disabled={newThreadDisabled}
+            onClick={onNewThread}
+          >
+            <SquarePenIcon />
+          </SidebarHeaderIconButton>
+        </div>
       </div>
     </div>
+  );
+}
+
+function SidebarBoardButton() {
+  const onBoard = useLocation({ select: (location) => location.pathname === "/" });
+  const { isMobile, setOpenMobile } = useSidebar();
+  return (
+    <Link
+      to="/"
+      aria-current={onBoard ? "page" : undefined}
+      onClick={() => {
+        if (isMobile) setOpenMobile(false);
+      }}
+      className={cn(
+        "flex h-8 items-center gap-2 rounded-md px-2 text-sm font-medium outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ring/70",
+        onBoard
+          ? "bg-sidebar-row-active text-sidebar-foreground"
+          : "text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground",
+      )}
+    >
+      <SquareKanbanIcon className="size-4 shrink-0 text-(--sidebar-icon-color)" />
+      Board
+    </Link>
   );
 }
 

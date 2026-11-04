@@ -317,6 +317,24 @@ export const SETTINGS_SEARCH_ITEMS = [
     searchTerms: ["colors borders interface"],
   },
   {
+    id: "setting-background-photo",
+    title: "Background photo",
+    to: "/settings/appearance",
+    searchTerms: ["wallpaper image picture backdrop"],
+  },
+  {
+    id: "setting-background-visibility",
+    title: "Photo visibility",
+    to: "/settings/appearance",
+    searchTerms: ["background wallpaper opacity strength"],
+  },
+  {
+    id: "setting-background-darken",
+    title: "Darken",
+    to: "/settings/appearance",
+    searchTerms: ["background wallpaper dim black overlay readability"],
+  },
+  {
     // Prefixed because the slider control already owns the `glass-opacity` id.
     id: "setting-glass-opacity",
     title: "Glass opacity",
@@ -932,7 +950,7 @@ export const SETTINGS_SEARCH_ITEMS = [
   },
   {
     id: "pull-request-links-open-in-app",
-    title: "Open pull requests in T3 Code",
+    title: "Open pull requests in Savage Code",
     to: "/settings/diffs",
     searchTerms: [
       `pr commit links ${SOURCE_CONTROL_HOST_LABELS} browser external click default pull request view panel`,
