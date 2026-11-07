@@ -256,7 +256,7 @@ const template = {
     {
       role: "system",
       content:
-        "Main prompt.\n - Primary working directory: /home/alice/app\n\n<runtime_info>old</runtime_info>\n\n## T3 Code orchestration\nold text",
+        "Main prompt.\n - Primary working directory: /home/alice/app\n\n<runtime_info>old</runtime_info>\n\n## Savage Code orchestration\nold text",
     },
     {
       role: "system",
@@ -294,7 +294,7 @@ const childCase: McpToolUseCase = {
   expect: { calls: [{ tool: "link_pull_request" }], notCalls: ["watch_pull_request"] },
 };
 
-it("rebuilds the template from this checkout and sends a child T3's task prompt", () => {
+it("rebuilds the template from this checkout and sends a child Savage Code's task prompt", () => {
   const base = buildBase(template, { model: "claude-sonnet-5-5", keepUserInstructions: false });
   const system = base.system.map((block) => String(block.text));
   assert.deepEqual(system.slice(0, 2), [
@@ -302,7 +302,7 @@ it("rebuilds the template from this checkout and sends a child T3's task prompt"
     `Main prompt.\n - Primary working directory: /home/user/app\n\n${t3SystemAppend("claude-sonnet-5-5")}`,
   ]);
   // The eval offers the device tools, so Claude's append carries the device block.
-  assert.include(t3SystemAppend("claude-sonnet-5-5"), "## T3 Code devices");
+  assert.include(t3SystemAppend("claude-sonnet-5-5"), "## Savage Code devices");
   assert.equal(base.environment.cwd, "/home/user/app");
   assert.include(system[2], "model named Sonnet 5.5. The exact model ID is claude-sonnet-5-5.");
   const deferred = system[2]?.split("Load them first:\n")[1]?.split("\n\n")[0]?.split("\n") ?? [];
@@ -1420,8 +1420,12 @@ it("does not credit a capture attempt on a different host", () => {
 });
 
 it.each([
-  ["T3's result names the remote device", { hostId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa" }, true],
-  ["T3's result names a local device", { hostId: "local" }, false],
+  [
+    "Savage Code's result names the remote device",
+    { hostId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa" },
+    true,
+  ],
+  ["Savage Code's result names a local device", { hostId: "local" }, false],
   ["failed attempt uses the matching open session", undefined, true],
 ] as const)(
   "credits a device_screenshot without hostId by the device T3 reached: %s",

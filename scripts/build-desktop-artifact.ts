@@ -62,7 +62,11 @@ import { Command, Flag } from "effect/cli";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 
 const LINUX_ICON_SIZES = [16, 22, 24, 32, 48, 64, 128, 256, 512] as const;
-const DESKTOP_APP_ID = "com.t3tools.t3code";
+// SAVAGE_KEEP_T3_DATA=1 keeps Savage Code's identity for installs that already use its folders.
+const DESKTOP_APP_ID =
+  loadRepoEnv().SAVAGE_KEEP_T3_DATA?.trim() === "1"
+    ? "com.t3tools.t3code"
+    : "fyi.aiforsavages.savagecode";
 const APPLE_TEAM_ID_PATTERN = /^[A-Z0-9]{10}$/u;
 
 const BuildPlatform = Schema.Literals(["mac", "linux", "win"]);
@@ -2774,7 +2778,7 @@ export const createBuildConfig = Effect.fn("createBuildConfig")(function* (
     afterPack: (yield* Path.Path).join(yield* RepoRoot, "scripts/prepare-server-compile-cache.cjs"),
     appId: DESKTOP_APP_ID,
     productName: resolveDesktopProductName(version),
-    artifactName: "T3-Code-${version}-${arch}.${ext}",
+    artifactName: "Savage-Code-${version}-${arch}.${ext}",
     electronLanguages: [...DESKTOP_ELECTRON_LANGUAGES],
     files: [
       ...DESKTOP_FILE_EXCLUSIONS,

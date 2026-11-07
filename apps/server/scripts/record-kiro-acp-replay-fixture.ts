@@ -192,7 +192,7 @@ function wireToEntries(wire: ReadonlyArray<WireMessage>): {
     const pending = direction === "outgoing" ? agentRequests : t3Requests;
     const method = pending.get(String(message.id));
     if (method === undefined) {
-      // A response to a request T3 never saw; T3's protocol drops it, so replay
+      // A response to a request T3 never saw; Savage Code's protocol drops it, so replay
       // never sees it either.
       droppedFrames += 1;
       continue;

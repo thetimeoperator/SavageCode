@@ -1,6 +1,6 @@
 // @effect-diagnostics nodeBuiltinImport:off preferSchemaOverJson:off - drives agent-device and the Hermes inspector; the probe types its own JSON.
 /**
- * One simulator, driven two ways: T3's `agent-device` CLI for real touches and system actions,
+ * One simulator, driven two ways: Savage Code's `agent-device` CLI for real touches and system actions,
  * and the dev-only behavior probe (`apps/mobile/src/features/development/behavior-probe.ts`)
  * through Metro's Hermes inspector for exact app state.
  */

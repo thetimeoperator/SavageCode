@@ -212,7 +212,7 @@ export const T3_CODE_DARK_THEME_COLORS: ThemeColors = {
   accentSurfaceForeground: "#f5f5f5",
   messageSurface: "#141414",
   messageForeground: "#f5f5f5",
-  messageAction: "#e8401c",
+  messageAction: "#d63a12",
   messageActionForeground: "#ffffff",
   messageActionHover: "#ff5a2c",
   codeBackground: "#111111",

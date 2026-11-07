@@ -24,6 +24,7 @@ it.effect.each(["t3code", "T3 Code (Alpha)"])(
         appDataDirectory: directory,
         isDevelopment: false,
         platform: "win32",
+        keepsT3CodeData: true,
       });
       assert.equal(yield* fs.readFileString(path.join(destination, "Local State")), state);
       assert.equal(yield* fs.readFileString(path.join(source, "Local State")), state);
@@ -33,10 +34,28 @@ it.effect.each(["t3code", "T3 Code (Alpha)"])(
         appDataDirectory: directory,
         isDevelopment: false,
         platform: "win32",
+        keepsT3CodeData: true,
       });
       assert.equal(
         yield* fs.readFileString(path.join(destination, "Local State")),
         "existing V2 state",
       );
     }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
+);
+
+it.effect("never reads Savage Code's folders unless the build keeps Savage Code data", () =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
+    const directory = yield* fs.makeTempDirectoryScoped({ prefix: "savage-profile-" });
+    yield* fs.makeDirectory(path.join(directory, "t3code"), { recursive: true });
+    yield* fs.writeFileString(path.join(directory, "t3code", "Local State"), "Savage Code keys");
+    const resolved = yield* resolveUserDataPath({
+      appDataDirectory: directory,
+      isDevelopment: false,
+      platform: "win32",
+    });
+    assert.equal(resolved, path.join(directory, "savage-code"));
+    assert.isFalse(yield* fs.exists(resolved));
+  }).pipe(Effect.scoped, Effect.provide(NodeServices.layer)),
 );

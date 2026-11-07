@@ -17,7 +17,7 @@ const USERNS_RESTRICTION = "/proc/sys/kernel/apparmor_restrict_unprivileged_user
 export const APPARMOR_PROFILE_PATH = "/etc/apparmor.d/t3-chrome-headless-shell";
 
 /** Match Ubuntu's Chrome profile; unconfined adds nothing beyond userns. */
-export const APPARMOR_PROFILE = `# Written by \`t3 browser setup\`: lets T3 Code's headless browser use Chrome's sandbox.
+export const APPARMOR_PROFILE = `# Written by \`t3 browser setup\`: lets Savage Code's headless browser use Chrome's sandbox.
 abi <abi/4.0>,
 include <tunables/global>
 
@@ -54,7 +54,7 @@ export class PreviewBrowserSandboxError extends Schema.TaggedError<PreviewBrowse
   { setupCommand: Schema.String },
 ) {
   override get message(): string {
-    return `This host blocks the sandbox T3's browser runs in (AppArmor on Ubuntu 23.10+). Run \`${this.setupCommand}\` on the host once to allow it, then try again.`;
+    return `This host blocks the sandbox Savage Code's browser runs in (AppArmor on Ubuntu 23.10+). Run \`${this.setupCommand}\` on the host once to allow it, then try again.`;
   }
 }
 
@@ -63,7 +63,7 @@ export class PreviewBrowserLibrariesError extends Schema.TaggedError<PreviewBrow
   { setupCommand: Schema.String, libraries: Schema.Array(Schema.String) },
 ) {
   override get message(): string {
-    return `This host is missing libraries T3's browser needs (${this.libraries.join(", ")}). Run \`${this.setupCommand}\` on the host to install them, then try again.`;
+    return `This host is missing libraries Savage Code's browser needs (${this.libraries.join(", ")}). Run \`${this.setupCommand}\` on the host to install them, then try again.`;
   }
 }
 

@@ -1,6 +1,6 @@
 # Release Checklist
 
-> For maintainers. Using T3 Code? See [docs/user](../user/).
+> For maintainers. Using Savage Code? See [docs/user](../user/).
 
 This document covers the unified release workflow for stable and nightly desktop releases.
 
@@ -45,11 +45,11 @@ the version.
   - The release job's **Write release notes** step (`scripts/generate-release-notes.ts`) builds the body: a computed header line, a short summary from `gpt-6.1-terra`, and GitHub's generated list folded under `<details>`. It needs the `OPENAI_API_KEY` secret. The desktop update popover shows up to seven highlights and the number of other fixes and performance improvements. Mobile-only commits count toward release totals but cannot be highlights. The offered release's age comes from the update feed's `releaseDate`. The nightly Discord post shows the part above `<details>`. If summary generation fails, the release uses GitHub's generated notes.
 - Includes Electron auto-update metadata (for example `latest*.yml`, `nightly*.yml`, and `*.blockmap`) in release assets.
 - Builds a self-contained CLI archive per platform (`t3-<version>-<platform>-<arch>.tar.gz`, `.zip` on Windows) in the same job as that target's desktop artifact and attaches them to the GitHub Release with a `SHA256SUMS` file, on every channel, for five targets: macOS arm64, Linux x64 and arm64, Windows x64 and arm64. Every archive is smoke-tested on hardware of its own architecture, and every one but the Windows archives is also built and signed there. There is no macOS x64 archive: Node single-executables are unsupported on x64 macOS (the SEA docs list macOS as arm64 only) and the binary segfaults on start; the x64 desktop app is Electron and unaffected.
-  - The archive holds the server as a Node single-executable (`scripts/build-cli-archive.ts`), so unpacking it needs neither Node, npm, nor a compiler. It is the only form in which T3 Code manages a runtime: the desktop's SSH environments, the boot service, `t3 update`, and the install scripts all download and verify this archive against `SHA256SUMS`. The `t3` npm package exists for people who run `npx t3` or `npm install -g t3` themselves, and it downloads this same archive too; nothing in the product installs from npm. The `curl | sh` installers are `scripts/install.sh` and `scripts/install.ps1`; the marketing site copies them into its `public/` at build time (`apps/marketing/scripts/stage-install-scripts.mjs`) and serves them at `t3.codes/install.sh` and `/install.ps1`.
+  - The archive holds the server as a Node single-executable (`scripts/build-cli-archive.ts`), so unpacking it needs neither Node, npm, nor a compiler. It is the only form in which Savage Code manages a runtime: the desktop's SSH environments, the boot service, `t3 update`, and the install scripts all download and verify this archive against `SHA256SUMS`. The `t3` npm package exists for people who run `npx t3` or `npm install -g t3` themselves, and it downloads this same archive too; nothing in the product installs from npm. The `curl | sh` installers are `scripts/install.sh` and `scripts/install.ps1`; the marketing site copies them into its `public/` at build time (`apps/marketing/scripts/stage-install-scripts.mjs`) and serves them at `t3.codes/install.sh` and `/install.ps1`.
   - The root `package.json` pins `engines.node` to the exact Node version used by development, CI and standalone executables. Keep it exact: cross-target builds download that version, and native executable builds reject a different host Node version. TEMPORARY: Linux arm64 executables build only on a Linux arm64 host and are injected with postject, because Node's `--build-sea` output cannot load on 16 or 64 KiB page kernels. Revert when [nodejs/node#67048](https://github.com/nodejs/node/issues/67048) is fixed. Runtime changes need a new T3 release version because installed runtimes are cached by that version.
   - macOS archives are signed with the Developer ID certificate and notarized when the Apple secrets are present (ad hoc otherwise, which still runs from `curl`/`tar` installs). Windows executables use the same Azure Trusted Signing setup as the installer. Every native addon in the macOS archive is signed too, since the hardened runtime refuses unsigned libraries.
   - Each archive is extracted and executed (`scripts/smoke-cli-archive.ts`) on its build runner, or on the `verify_runner` for Windows.
-- After the GitHub Release is published, publishes the `t3` npm package with OIDC trusted publishing from the same workflow file. It is only a launcher (`scripts/npm-launcher/t3.mjs`): on first run it downloads its exact version's CLI archive from the GitHub Release, verifies it against `SHA256SUMS`, and unpacks it into `<T3 home>/runtime/versions/<version>`, the layout the install scripts and `t3 update` share. The executables are not on npm. They used to be, as `@t3code/t3-<platform>-<arch>` optional dependencies, but npm's publish-time scanning held those 80-250 MB packages back for up to an hour after the launcher was live, and every install in that window got a launcher with no executable. Those packages stay on npm at their old versions and get no new ones. Because the launcher reads from the release, `publish_cli` runs after `release`, never before.
+- After the GitHub Release is published, publishes the `t3` npm package with OIDC trusted publishing from the same workflow file. It is only a launcher (`scripts/npm-launcher/t3.mjs`): on first run it downloads its exact version's CLI archive from the GitHub Release, verifies it against `SHA256SUMS`, and unpacks it into `<Savage Code home>/runtime/versions/<version>`, the layout the install scripts and `t3 update` share. The executables are not on npm. They used to be, as `@t3code/t3-<platform>-<arch>` optional dependencies, but npm's publish-time scanning held those 80-250 MB packages back for up to an hour after the launcher was live, and every install in that window got a launcher with no executable. Those packages stay on npm at their old versions and get no new ones. Because the launcher reads from the release, `publish_cli` runs after `release`, never before.
   - stable releases publish npm dist-tag `latest`
   - nightly releases publish npm dist-tag `nightly`
   - preview releases publish npm dist-tag `preview`, which nothing resolves unless asked for by name
@@ -219,7 +219,7 @@ A deleted legacy tunnel keeps its allocation, so its hostname is kept. When the 
 - On a build with recovery, the connector is rejected and the host requests a replacement tunnel at
   the same hostname.
 - On an older build with a CLI link, startup provisions a new tunnel.
-- On an older build linked from web or mobile, the host stays offline until T3 Code on that computer
+- On an older build linked from web or mobile, the host stays offline until Savage Code on that computer
   is updated.
 
 Ship the web and mobile builds that show the offline reason before enabling legacy cleanup, so a
@@ -236,7 +236,7 @@ column in its first deploy with this change; the legacy switch stays `off` until
    They include ones the reaper skips, so they are an upper bound on the backlog. The share of `wouldDeleteLegacy` in each sweep's `scanned` estimates how
    much of that total is eligible.
 3. Run the legacy steps of the disposable-host canary below.
-4. Before enabling, confirm the web and mobile builds that show the "update T3 Code on that computer"
+4. Before enabling, confirm the web and mobile builds that show the "update Savage Code on that computer"
    message are live. Without them, a user whose older host lost its tunnel only sees it as offline.
 5. Set the legacy mode to `enabled`. One sweep deletes at most 100 tunnels, four at a time, and
    stops starting new deletions after 90 seconds. A backlog of 20,000 takes about 17 hours if each
@@ -263,12 +263,12 @@ recover as described above.
 ### Disposable-host canary
 
 This test has not been run against a real Cloudflare account. Run it against a disposable relay
-stage, test Cloudflare account, disposable host, and disposable T3 home. Keep production cleanup at
+stage, test Cloudflare account, disposable host, and disposable Savage Code home. Keep production cleanup at
 `off` or `dry-run` until it passes. Do not stop a daily-use T3 server.
 
 1. Deploy the disposable stage with cleanup `dry-run`. Link a first disposable environment through
    web or mobile settings and confirm its tunnel is healthy and recovery is registered.
-2. Stop that host and restart the same T3 home on a different local port. Confirm the public
+2. Stop that host and restart the same Savage Code home on a different local port. Confirm the public
    hostname reaches the new port and sends nothing to the old one.
 3. Link a second disposable environment with a server build that predates recovery registration.
    Capture its managed `cloudflared` child PID, confirm it belongs to that host, and pause only that

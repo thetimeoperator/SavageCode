@@ -644,7 +644,7 @@ describe("ClaudeAdapterV2 native protocol logging", () => {
     assert.equal(systemPrompt.preset, "claude_code");
     assert.include(systemPrompt.append ?? "", "Use `delegate_task`");
     assert.include(systemPrompt.append ?? "", "call `t3_background_wait`");
-    assert.notInclude(systemPrompt.append ?? "", "## T3 Code devices");
+    assert.notInclude(systemPrompt.append ?? "", "## Savage Code devices");
     const logged = ClaudeAdapterV2.loggedClaudeQueryOptions(options);
     assert.equal(logged.hasMcpServers, true);
     assert.notInclude(JSON.stringify(logged), "secret-claude-token");
@@ -690,8 +690,8 @@ describe("ClaudeAdapterV2 device instructions", () => {
   });
 
   it("leaves the device block out without device access or without T3 tools", () => {
-    assert.notInclude(append({ mcp: true, deviceToolsAvailable: false }), "## T3 Code devices");
-    assert.notInclude(append({ mcp: false, deviceToolsAvailable: true }), "## T3 Code devices");
+    assert.notInclude(append({ mcp: true, deviceToolsAvailable: false }), "## Savage Code devices");
+    assert.notInclude(append({ mcp: false, deviceToolsAvailable: true }), "## Savage Code devices");
   });
 
   it("gives native subagents the device block only in a session with device access", async () => {
@@ -1116,11 +1116,11 @@ describe("ClaudeAdapterV2 append-system-prompt-file launch argument", () => {
     ),
   );
 
-  // regression: #15073 the SDK replaced the --settings launch argument with T3's settings
+  // regression: #15073 the SDK replaced the --settings launch argument with Savage Code's settings
   it.effect.each([
     `--settings '{"skillOverrides":{"lint":"off"},"showThinkingSummaries":false}'`,
     "--settings user-settings.json",
-  ])("merges %s beneath T3's settings", (launchArgs) =>
+  ])("merges %s beneath Savage Code's settings", (launchArgs) =>
     Effect.scoped(
       Effect.gen(function* () {
         const fileSystem = yield* FileSystem.FileSystem;

@@ -14,6 +14,7 @@ import * as Path from "effect/Path";
 import * as DesktopAppSettings from "../settings/DesktopAppSettings.ts";
 import * as DesktopConfig from "./DesktopConfig.ts";
 import { resolveLinuxDesktopEntryName } from "./DesktopEarlyElectronStartup.ts";
+import { APP_USER_MODEL_ID } from "./DesktopDataIdentity.ts";
 import { resolveDesktopBaseDir, resolveDesktopStateDir } from "./DesktopStatePaths.ts";
 import { isNightlyDesktopVersion } from "../updates/updateChannels.ts";
 import type { OtlpProtocol } from "@t3tools/shared/observability";
@@ -228,7 +229,7 @@ const make = Effect.fn("desktop.environment.make")(function* (
     branding,
     displayName,
     appUserModelId: Option.getOrElse(config.appUserModelIdOverride, () =>
-      isDevelopment ? "com.t3tools.t3code.dev" : "com.t3tools.t3code",
+      isDevelopment ? `${APP_USER_MODEL_ID}.dev` : APP_USER_MODEL_ID,
     ),
     linuxDesktopEntryName: resolveLinuxDesktopEntryName(isDevelopment),
     linuxApplicationsDir,

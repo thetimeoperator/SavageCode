@@ -4,7 +4,7 @@ import type { ProviderReplayTranscript } from "@t3tools/contracts";
 import type { OrchestratorV2ScenarioResult } from "../../OrchestratorScenario.ts";
 import { assertSemanticProjectionIntegrity, projectionFor } from "../shared.ts";
 
-/** Tool call ids Kiro reported `failed` after T3's `session/cancel`. */
+/** Tool call ids Kiro reported `failed` after Savage Code's `session/cancel`. */
 export function kiroFailedAfterCancel(transcript: ProviderReplayTranscript): Array<string> {
   const cancelIndex = transcript.entries.findIndex(
     (entry) => entry.type === "expect_outbound" && entry.label === "notification:session/cancel",

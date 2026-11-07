@@ -4,6 +4,8 @@ import * as Path from "effect/Path";
 import * as PlatformError from "effect/PlatformError";
 import * as Schema from "effect/Schema";
 
+import { keepsT3CodeData, userDataFolderNames } from "./DesktopDataIdentity.ts";
+
 export class DesktopUserDataInitializationError extends Schema.TaggedError<DesktopUserDataInitializationError>()(
   "DesktopUserDataInitializationError",
   {
@@ -36,13 +38,18 @@ export const resolveUserDataPath = Effect.fn("desktop.userData.resolveUserDataPa
     readonly appDataDirectory: string;
     readonly isDevelopment: boolean;
     readonly platform: NodeJS.Platform;
+    readonly keepsT3CodeData?: boolean;
   }) {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
+    const keepT3CodeData = input.keepsT3CodeData ?? keepsT3CodeData;
+    const folders = userDataFolderNames(keepT3CodeData);
     const names = input.isDevelopment
-      ? { current: "t3code-dev", legacy: "T3 Code (Dev)" }
-      : { current: "t3code-v2", legacy: "T3 Code (Alpha)" };
+      ? { current: folders.development, legacy: "T3 Code (Dev)" }
+      : { current: folders.production, legacy: "T3 Code (Alpha)" };
     const destinationPath = path.join(input.appDataDirectory, names.current);
+    // The legacy folders below belong to Savage Code.
+    if (!keepT3CodeData) return destinationPath;
     const legacyPath = path.join(input.appDataDirectory, names.legacy);
     const inspect = (resourcePath: string) =>
       fs

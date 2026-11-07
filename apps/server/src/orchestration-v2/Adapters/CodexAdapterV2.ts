@@ -1410,7 +1410,7 @@ function codexThreadRuntimeParams(input: {
       ...(t3Server === undefined
         ? {}
         : {
-            // Override only T3's servers so launch-argument MCP servers survive.
+            // Override only Savage Code's servers so launch-argument MCP servers survive.
             "mcp_servers.t3-code": { ...t3Server, disabled_tools: [CODEX_DIRECT_ONLY_T3_TOOL] },
             // Code Mode runs a blocking wait as a nested call, and the model keeps working
             // around it. A second, direct-only registration makes it a plain tool call.
@@ -1816,7 +1816,7 @@ export const makeCodexAdapterV2 = Effect.fn("makeCodexAdapterV2")(function* (
               return yield* new ProviderSetupError({
                 instanceId: adapterOptions.instanceId,
                 operation: "runtime",
-                detail: `Codex ${version} does not work with this T3 Code release. Update Codex to ${target}, then retry.`,
+                detail: `Codex ${version} does not work with this Savage Code release. Update Codex to ${target}, then retry.`,
               });
             }
             yield* client.notify("initialized", undefined);

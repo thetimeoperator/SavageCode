@@ -1472,7 +1472,7 @@ export function claudeQueryEnvironment(
 }
 
 // Claude Code's auto tool search sends every MCP schema in full while they fit under a share of the
-// context window, which T3's tools do on 1M models. auto:0 already means on and auto:100 off.
+// context window, which Savage Code's tools do on 1M models. auto:0 already means on and auto:100 off.
 export function claudeToolSearchOverride(value: string | undefined): "true" | undefined {
   if (value === undefined) return undefined;
   if (value === "auto") return "true";
@@ -1722,7 +1722,7 @@ const decodeClaudeLaunchArgSettings = Schema.decodeUnknownEffect(
 /**
  * Reads the --settings launch argument: a value starting with a brace is inline
  * JSON, anything else is a file path relative to the cwd. makeClaudeQueryOptions
- * merges the result beneath T3's own settings.
+ * merges the result beneath Savage Code's own settings.
  */
 const readClaudeLaunchArgSettings = Effect.fn("ClaudeAdapterV2.readLaunchArgSettings")(
   function* (input: {
@@ -3509,7 +3509,7 @@ export function permissionResultFromDecision(input: {
   readonly toolUseID: string;
   readonly suggestions?: Parameters<CanUseTool>[2]["suggestions"];
   readonly feedback?: string;
-  /** Under an administrator's ceiling, T3 Code's mode is the only one; Claude cannot switch it. */
+  /** Under an administrator's ceiling, Savage Code's mode is the only one; Claude cannot switch it. */
   readonly managedCeiling?: boolean;
 }): PermissionResult {
   if (input.decision === "accept" || input.decision === "acceptForSession") {
@@ -8590,7 +8590,7 @@ export const makeClaudeAdapterV2 = Effect.fn("makeClaudeAdapterV2")(function* (
               failure: makeProviderFailure({
                 class: "provider_error",
                 code: "claude_mod_ui_unsupported",
-                message: `The Claude Code mod "${focusedPlugin}" is waiting for input in its terminal pane, which T3 Code cannot show. Disable the mod for sessions run from T3 Code, or run the task in the Claude Code terminal.`,
+                message: `The Claude Code mod "${focusedPlugin}" is waiting for input in its terminal pane, which Savage Code cannot show. Disable the mod for sessions run from Savage Code, or run the task in the Claude Code terminal.`,
               }),
             });
             // Closing ends the CLI process and abandons the held tool call
@@ -10830,7 +10830,7 @@ export const makeClaudeAdapterV2 = Effect.fn("makeClaudeAdapterV2")(function* (
                 }
                 const nativeItemId = `bypass-policy-downgrade:${context.providerTurnId}`;
                 const notice =
-                  "T3 could not confirm Claude bypass permissions here, so Full access is running with approval checks.";
+                  "Savage Code could not confirm Claude bypass permissions here, so Full access is running with approval checks.";
                 yield* emitProviderEvent({
                   type: "turn_item.updated",
                   driver: CLAUDE_PROVIDER,

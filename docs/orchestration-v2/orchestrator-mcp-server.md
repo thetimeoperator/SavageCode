@@ -8,7 +8,7 @@ agent can use this endpoint to:
 - create an app-owned sub-agent on any supported provider instance;
 - wait for or poll the sub-agent's durable result;
 - cancel an active delegated task; and
-- create one or more ordinary top-level T3 threads;
+- create one or more ordinary top-level Savage Code threads;
 - list a project's threads and incrementally read any thread;
 - rename threads, regenerate titles, and link or unlink pull requests;
 - send or steer follow-up messages;
@@ -42,7 +42,7 @@ Before `ProviderSessionManager` opens a new V2 provider session, it asks
 `McpSessionRegistry` for a credential scoped to:
 
 - the T3 environment;
-- the parent T3 thread;
+- the parent Savage Code thread;
 - the concrete provider instance; and
 - the provider session.
 
@@ -59,7 +59,7 @@ check the `orchestration` capability before reading or mutating state.
 
 ### Codex V2
 
-Codex gets T3's MCP server in each thread's `thread/start`, `thread/resume`,
+Codex gets Savage Code's MCP server in each thread's `thread/start`, `thread/resume`,
 and `thread/fork` config, with the provider-session token in an
 `Authorization` header. The same server is registered twice:
 
@@ -337,7 +337,7 @@ optional cancellation reason.
 
 ### `create_threads`
 
-Creates between one and twenty ordinary top-level T3 threads:
+Creates between one and twenty ordinary top-level Savage Code threads:
 
 ```ts
 type CreateThreadsInput = {

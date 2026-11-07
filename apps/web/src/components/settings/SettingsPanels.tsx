@@ -1,6 +1,5 @@
 import { useAtomValue } from "@effect/atom-react";
 import { NotificationSettings } from "./NotificationSettings";
-import { PRIVACY_POLICY_URL } from "../../legalLinks";
 import { CheckIcon } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
@@ -31,7 +30,6 @@ import * as Schema from "effect/Schema";
 import { APP_VERSION, HOSTED_APP_CHANNEL, HOSTED_APP_CHANNEL_LABEL } from "../../branding";
 import { AboutVersionTitle } from "./AboutVersionTitle";
 import { CliCommandSettingsRow } from "./CliCommandSettingsRow";
-import { MobileAppSettingsRow } from "./MobileAppSettingsRow";
 import {
   canCheckForUpdate,
   getDesktopUpdateButtonTooltip,
@@ -62,7 +60,7 @@ import { ProjectDefaultsSettings } from "./ProjectDefaultsSettings";
 import { ThreadTitleInstructionsSettings } from "./ThreadTitleInstructionsSettings";
 import { SnoozePresetsRow } from "./SnoozePresetsSettings";
 import { useDesktopUpdateState } from "../../state/desktopUpdate";
-import { managedTelemetryOffMessage, usePrimaryManagedPolicy } from "../../state/managedPolicy";
+import { usePrimaryManagedPolicy } from "../../state/managedPolicy";
 import {
   getCustomModelOptionsByInstance,
   resolveAppModelSelectionState,
@@ -2005,7 +2003,6 @@ export function MaintenanceSettingsPanel() {
 
 export function AboutSettingsPanel() {
   const primaryPolicy = usePrimaryManagedPolicy();
-  const telemetryOff = managedTelemetryOffMessage(primaryPolicy);
   return (
     <SettingsPageContainer>
       <SettingsSection id="about" title="App">
@@ -2039,27 +2036,9 @@ export function AboutSettingsPanel() {
             />
           </>
         )}
-        <MobileAppSettingsRow />
       </SettingsSection>
 
       <SettingsSection id="legal" title="Legal">
-        <SettingsRow
-          {...searchableSetting("privacy-policy")}
-          description={
-            telemetryOff === undefined
-              ? "How we handle your data, including the anonymous usage data Savage Code collects."
-              : `How we handle your data. ${telemetryOff}`
-          }
-          control={
-            <Button
-              render={<a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer noopener" />}
-              size="sm"
-              variant="outline"
-            >
-              View policy
-            </Button>
-          }
-        />
         <SettingsRow
           {...searchableSetting("open-source-licenses")}
           description="Notices for dependencies, assets, and optional tools used by Savage Code."
